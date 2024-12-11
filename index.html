@@ -13,7 +13,7 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      background-color: white
+      background-color: white;
     }
 
     h1 {
@@ -44,6 +44,7 @@
       mask-image: url('window1.png');
       -webkit-mask-size: cover;
       mask-size: cover;
+      display: none; /* Hide the video feed initially */
     }
 
     .stained-glass-overlay {
@@ -84,8 +85,8 @@
       background-color: white;
     }
 
-    /* Mobile-friendly adjustments */
-    @media (max-width: 600px) {
+     /* Mobile-friendly adjustments */
+     @media (max-width: 600px) {
       .camera-feed {
         width: 100vw;
         padding-top: calc(100vw * (20 / 21));
@@ -104,6 +105,8 @@
   </div>
 
   <script>
+    let stream;  // Store the media stream to stop it later
+
     // Function to start the camera feed
     function startCamera() {
       const video = document.getElementById('video');
@@ -117,14 +120,32 @@
         }
       };
 
+      // Stop the previous camera stream if it's still active
+      if (stream) {
+        stopCamera();
+      }
+
+      // Request access to the camera
       navigator.mediaDevices.getUserMedia(constraints)
-        .then((stream) => {
-          // Attach the stream to the video element
+        .then((newStream) => {
+          stream = newStream;  // Store the new stream
           video.srcObject = stream;
+          video.style.display = "block";  // Show the video element after it's ready
         })
         .catch((error) => {
           console.error('Error accessing camera:', error);
         });
+    }
+
+    // Function to stop the camera feed
+    function stopCamera() {
+      const video = document.getElementById('video');
+      if (stream) {
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());  // Stop each track of the stream
+        stream = null;
+      }
+      video.style.display = "none";  // Hide the video element when camera is stopped
     }
 
     // Add event listener for user interaction (button click) to start camera
