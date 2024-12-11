@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stained Glass Website</title>
+  <title>Stained Glass Overlay</title>
   <style>
     body {
       font-family: sans-serif;
@@ -12,7 +12,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #f3f3f3;
+      flex-direction: column; /* Stack elements vertically */
+      background-color: white
     }
 
     h1 {
@@ -30,19 +31,18 @@
       overflow: hidden; /* Ensure no overflow happens outside the container */
     }
 
-    /* Video feed with mask */
     #video {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover; /* Ensures the video fills the container without distortion */
-      object-position: center center; /* Center the video within the container */
-      -webkit-mask-image: url('window1.png'); /* Apply the image as a mask */
-      mask-image: url('window1.png'); /* Apply the image as a mask */
-      -webkit-mask-size: cover; /* Ensure the mask scales to cover the video */
-      mask-size: cover; /* Ensure the mask scales to cover the video */
+      object-fit: cover;
+      object-position: center center;
+      -webkit-mask-image: url('window1.png');
+      mask-image: url('window1.png');
+      -webkit-mask-size: cover;
+      mask-size: cover;
     }
 
     .stained-glass-overlay {
@@ -52,7 +52,7 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      opacity: 0.45;
+      opacity: 0.5;
       object-fit: contain;
     }
 
@@ -66,74 +66,67 @@
       object-fit: contain;
     }
 
-    /* Mobile-friendly adjustments using media query */
-    @media (max-width: 600px) {
-      .camera-feed {
-        width: 100vw; /* Ensure container fills the screen width on small devices */
-        padding-top: calc(100vw * (20 / 21)); /* Adjust for aspect ratio based on viewport width */
-      }
+    /* Button style */
+    #startCameraBtn {
+      margin-bottom: 20px; /* Space between the button and the camera feed */
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: white;
+      color: black;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
     }
 
+    #startCameraBtn:hover {
+      background-color: beige;
+    }
+
+    /* Mobile-friendly adjustments */
+    @media (max-width: 600px) {
+      .camera-feed {
+        width: 100vw;
+        padding-top: calc(100vw * (20 / 21));
+      }
+    }
   </style>
-  <title>Stained Glass Overlay</title>
 </head>
 <body>
-    <div class="camera-feed">
-        <video id="video" autoplay></video>
-        <img class="imgA1 stained-glass-overlay" src="window1.png" />
-        <img class="imgB1" src="window1frame.png" />
-    </div>
-    <script>
-      // Function to access the user's camera feed
-      function startCamera() {
-        const video = document.getElementById('video');
-        
-        // Access the user's camera using getUserMedia
-        navigator.mediaDevices.getUserMedia({ video: true })
-          .then((stream) => {
-            // Attach the video stream to the video element
-            video.srcObject = stream;
-          })
-          .catch((error) => {
-            console.error('Error accessing camera:', error);
-          });
-      }
+  <!-- Button to trigger camera on mobile (avoiding autoplay restrictions) -->
+  <button id="startCameraBtn">𓂀</button>
 
-      // Function to adjust the video size and aspect ratio
-      function adjustVideoSize() {
-        const video = document.getElementById('video');
-        const container = document.querySelector('.camera-feed');
+  <div class="camera-feed">
+    <video id="video" autoplay></video>
+    <img class="imgA1 stained-glass-overlay" src="window1.png" />
+    <img class="imgB1" src="window1frame.png" />
+  </div>
 
-        const containerWidth = container.offsetWidth;
-        const containerHeight = container.offsetHeight;
+  <script>
+    // Function to start the camera feed
+    function startCamera() {
+      const video = document.getElementById('video');
 
-        const imageAspectRatio = 21 / 20; // Set 21:20 aspect ratio
-
-        // Adjust the size of the video based on the aspect ratio
-        const videoWidth = containerHeight * imageAspectRatio; // Calculate width based on height to maintain aspect ratio
-
-        if (videoWidth > containerWidth) {
-          // If the calculated width is greater than the container width, use the width of the container
-          video.style.width = '100%';
-          video.style.height = 'auto';
-        } else {
-          // Otherwise, use the calculated width and set height to 100%
-          video.style.width = videoWidth + 'px';
-          video.style.height = '100%';
+      // Specify video constraints to use the back camera on mobile
+      const constraints = {
+        video: {
+          facingMode: "environment", // 'environment' is the back camera
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
         }
+      };
 
-        // Ensure the video is centered in the container
-        video.style.left = `${(containerWidth - video.offsetWidth) / 2}px`; // Center horizontally
-      }
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+          // Attach the stream to the video element
+          video.srcObject = stream;
+        })
+        .catch((error) => {
+          console.error('Error accessing camera:', error);
+        });
+    }
 
-      // Start the camera feed when the page loads
-      window.addEventListener('load', () => {
-        startCamera();
-        adjustVideoSize();
-      });
-
-      // Re-adjust the video size on window resize
-      window.addEventListener('resize', adjustVideoSize);
-    </script>
+    // Add event listener for user interaction (button click) to start camera
+    document.getElementById("startCameraBtn").addEventListener("click", startCamera);
+  </script>
 </body>
 </html>
