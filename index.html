@@ -10,25 +10,62 @@
       margin: 0;
       height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
+      justify-content: center; /* Center content horizontally */
+      align-items: center; /* Center content vertically */
       background-color: white;
+      text-align: center;
     }
 
     h1 {
       color: black;
     }
 
+    /* Message for mobile users */
+    .mobile-message {
+      display: none; /* Hide by default */
+      text-align: center;
+      font-size: 20px;
+      font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      color: #333;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      width: 80%;
+    }
+
+    /* The normal content for desktop users */
+    .desktop-content {
+      display: block; /* Default to showing on desktop */
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center; /* Center the content */
+      align-items: center; /* Center the content */
+      flex-direction: column; /* Ensure button is above content */
+    }
+
+    /* Hide the desktop content on mobile */
+    @media (max-width: 600px) {
+      .desktop-content {
+        display: none; /* Hide on mobile */
+      }
+      .mobile-message {
+        display: block; /* Show on mobile */
+      }
+    }
+
     /* Camera feed container with 21:20 aspect ratio */
     .camera-feed {
       position: relative;
       width: 80vmin; /* Relative scaling based on viewport size */
+      height: 0;
       padding-top: calc(80vmin * (20 / 21)); /* Maintain 21:20 aspect ratio */
       max-width: 100%;
       max-height: 100%;
       background-color: transparent;
-      overflow: hidden; /* Ensure no overflow happens outside the container */
+      display: flex;
+      justify-content: center; /* Center content horizontally */
+      align-items: center; /* Center content vertically */
     }
 
     /* Video feed */
@@ -68,7 +105,6 @@
       object-fit: contain;
     }
 
-
     /* Button style */
     #startCameraBtn {
       margin-bottom: 20px; /* Space between the button and the camera feed */
@@ -85,23 +121,32 @@
       background-color: white;
     }
 
-     /* Mobile-friendly adjustments */
-     @media (max-width: 600px) {
+    /* Mobile-friendly adjustments */
+    @media (max-width: 600px) {
       .camera-feed {
         width: 100vw;
-        padding-top: calc(100vw * (20 / 21));
+        height: calc(100vw * (20 / 21)); /* Adjust for mobile */
       }
     }
+
   </style>
 </head>
 <body>
-  <!-- Button to trigger camera on mobile (avoiding autoplay restrictions) -->
-  <button id="startCameraBtn">𓂀</button>
+  <!-- Mobile Message Section -->
+  <div class="mobile-message">
+    YOU ARE ONLY ALLOWED TO USE THIS WEBSITE ON YOUR COMPUTER BECAUSE I AM A BAD WEB DEVELOPER. 
+  </div>
 
-  <div class="camera-feed">
-    <video id="video" autoplay></video>
-    <img class="imgA1 stained-glass-overlay" src="window1.png" />
-    <img class="imgB1" src="window1frame.png" />
+  <!-- Normal Content for Desktop Users -->
+  <div class="desktop-content">
+    <!-- Button to trigger camera on mobile (avoiding autoplay restrictions) -->
+    <button id="startCameraBtn">𓂀</button>
+
+    <div class="camera-feed">
+      <video id="video" autoplay></video>
+      <img class="imgA1 stained-glass-overlay" src="window1.png" />
+      <img class="imgB1" src="window1frame.png" />
+    </div>
   </div>
 
   <script>
